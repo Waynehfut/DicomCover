@@ -4,6 +4,7 @@ import os
 import pylab
 import glob
 
+
 # 传入文件名显示图片
 def show_image_file(fileName):
     ds = dicom.read_file(fileName)
@@ -38,19 +39,21 @@ def save_dicom_image(dicomDataset):
            + ' saved to ' + folder_name)
     os.chdir('..')
 
+
 def traversalDir_FirstDir(path):
     list = []
     if (os.path.exists(path)):
-    #获取该目录下的所有文件或文件夹目录路径
-        files = glob.glob(path + '\\*' )
+        # 获取该目录下的所有文件或文件夹目录路径
+        files = glob.glob(path + '\\*')
         for file in files:
-            #判断该路径下是否是文件夹
+            # 判断该路径下是否是文件夹
             if (os.path.isdir(file)):
                 list.append(file)
         return list
 
+
 # 遍历Dicomdir中的文件并保存
-root_path = os .getcwd()
+root_path = os.getcwd()
 print traversalDir_FirstDir(root_path)
 for fileDir in traversalDir_FirstDir(root_path):
     os.chdir(fileDir)
