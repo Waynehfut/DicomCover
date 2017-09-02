@@ -1,7 +1,8 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 import dicom
 import os
 import pylab
+import glob
 
 # 传入文件名显示图片
 def show_image_file(fileName):
@@ -9,10 +10,10 @@ def show_image_file(fileName):
     pylab.imshow(ds.pixel_array, cmap=pylab.cm.bone)
     pylab.show()
 
+
 # 解析dicom文件
 def parse_dicomdir(dicomDir):
     dsdir = dicom.read_dicomdir(dicomDir)
-    pixel_data = list()
     dicom_array = list()
     for record in dsdir.DirectoryRecordSequence:
         if record.DirectoryRecordType == "IMAGE":
@@ -23,15 +24,35 @@ def parse_dicomdir(dicomDir):
             dicom_array.append(dcm)
     return dicom_array
 
+
 # 保存Dicom文件
 def save_dicom_image(dicomDataset):
-    if not os.path.exists(dicomDataset.filename.split('\\')[0] + '_export'):
-        os.mkdir(dicomDataset.filename.split('\\')[0] + '_export')
-    pylab.imshow(dicomDataset.pixel_array,cmap=pylab.cm.bone)
-    os.chdir(dicomDataset.filename.split('\\')[0]+'_export')
-    pylab.savefig(dicomDataset.filename.replace('\\','.')+'.jpg',bbox_inches='tight')
+    folder_name = dicomDataset.filename.split('\\')[0] + '_export'
+    if not os.path.exists(folder_name):
+        os.mkdir(folder_name)
+    pylab.imshow(dicomDataset.pixel_array, cmap=pylab.cm.bone)
+    os.chdir(folder_name)
+    picture_name = dicomDataset.filename.replace('\\', '.') + '.jpg'
+    pylab.savefig(picture_name, bbox_inches='tight')
+    print (dicomDataset.filename.replace('\\', '.') + '.jpg'
+           + ' saved to ' + folder_name)
     os.chdir('..')
 
+def traversalDir_FirstDir(path):
+    list = []
+    if (os.path.exists(path)):
+    #获取该目录下的所有文件或文件夹目录路径
+        files = glob.glob(path + '\\*' )
+        for file in files:
+            #判断该路径下是否是文件夹
+            if (os.path.isdir(file)):
+                list.append(file)
+        return list
+
 # 遍历Dicomdir中的文件并保存
-for singleRecord in parse_dicomdir("DICOMDIR"):
-    save_dicom_image(singleRecord)
+root_path = os .getcwd()
+print traversalDir_FirstDir(root_path)
+for fileDir in traversalDir_FirstDir(root_path):
+    os.chdir(fileDir)
+    for singleRecord in parse_dicomdir("DICOMDIR"):
+        save_dicom_image(singleRecord)
