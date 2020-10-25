@@ -1,4 +1,2 @@
 ### DicomCover
-Run `python TestCover.py` will parse all dicomfile automatically
-
-Code by wayne
+Run `python TestCover.py` will parse sample dicomfile
